@@ -105,14 +105,8 @@ namespace LuxManagement
 
         private void TrackBarLuminosity_ValueChanged(object? sender, EventArgs e)
         {
-            if (colorDialog.ShowDialog() == DialogResult.OK)
-            {
-                Color selectedColor = colorDialog.Color;
-                float luminosity = trackBarLuminosity.Value / 100f;
-                Color adjustedColor = ChangeColorLuminosity(selectedColor, luminosity);
-
-                ChangeDesktopColor(ColorTranslator.ToHtml(adjustedColor));
-            }
+            /*NativeMethods.SetLayeredWindowAttributes(overlayWindow.Handle, 0, (byte)(255 - (brightness / 100f) * 255),
+(int)LayeredWindowAttributeFlags.LWA_ALPHA);*/
         }
 
         private void ApplyButton_Click(object sender, EventArgs e)
@@ -138,10 +132,12 @@ namespace LuxManagement
 
         public void ChangeDesktopColor(string colorHex)
         {
+            /*
             // This is just a placeholder. To change the actual desktop color, 
             // you would typically change the wallpaper or system theme color.
             // For example, set a solid color wallpaper.
             NativeMethods.SystemParametersInfo(NativeMethods.SPI_SETDESKWALLPAPER, 0, colorHex, NativeMethods.SPIF_UPDATEINIFILE | NativeMethods.SPIF_SENDCHANGE);
+            */
         }
 
         private void label1_Click(object sender, EventArgs e)

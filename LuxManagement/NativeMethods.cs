@@ -1,62 +1,60 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace LuxManagement
 {
-    public static class NativeMethods
+    internal static class NativeMethods
     {
-        public const uint SPI_SETDESKWALLPAPER = 0x0014;
-        public const uint SPI_GETDESKWALLPAPER = 0x0073;
-        public const uint SPI_SETNONCLIENTMETRICS = 0x002A;
-        public const uint SPI_GETNONCLIENTMETRICS = 0x0029;
-        public const uint SPIF_UPDATEINIFILE = 0x01;
-        public const uint SPIF_SENDCHANGE = 0x02;
+        #region "User32.dll"
+        /// <summary>
+        /// Places the window above all non-topmost windows. The window maintains its topmost position even when it is deactivated.
+        /// (SetWindowPos() parameter)
+        /// </summary>
+        public static IntPtr HWND_TOPMOST = new IntPtr(-1);
 
-        [StructLayout(LayoutKind.Sequential)]
-        public struct NONCLIENTMETRICS
-        {
-            public uint cbSize;
-            public int iBorderWidth;
-            public int iScrollWidth;
-            public int iScrollHeight;
-            public int iCaptionWidth;
-            public int iCaptionHeight;
-            public LOGFONT lfCaptionFont;
-            public int iSmCaptionWidth;
-            public int iSmCaptionHeight;
-            public LOGFONT lfSmCaptionFont;
-            public int iMenuWidth;
-            public int iMenuHeight;
-            public LOGFONT lfMenuFont;
-            public LOGFONT lfStatusFont;
-            public LOGFONT lfMessageFont;
-            public int iPaddedBorderWidth;
-        }
+        /// <summary>
+        /// Places the window at the top of the Z order.
+        /// (SetWindowPos() parameter)
+        /// </summary>
+        public static IntPtr HWND_TOP = new IntPtr(0);
 
-        [StructLayout(LayoutKind.Sequential)]
-        public struct LOGFONT
-        {
-            public int lfHeight;
-            public int lfWidth;
-            public int lfEscapement;
-            public int lfOrientation;
-            public int lfWeight;
-            public byte lfItalic;
-            public byte lfUnderline;
-            public byte lfStrikeOut;
-            public byte lfCharSet;
-            public byte lfOutPrecision;
-            public byte lfClipPrecision;
-            public byte lfQuality;
-            public byte lfPitchAndFamily;
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
-            public string lfFaceName;
-        }
+        /// <summary>
+        /// Sets a new extended window style.
+        /// (SetWindowLong() parameter)
+        /// </summary>
+        public const int GWL_EXSTYLE = -20;
+        /// <summary>
+        /// Sets a new window style.
+        /// (SetWindowLong() parameter)
+        /// </summary>
+        public const int GWL_STYLE = -16;
 
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        public static extern bool SystemParametersInfo(uint uiAction, uint uiParam, IntPtr pvParam, uint fWinIni);
+        [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int cx, int cy, int flags);
 
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        public static extern bool SystemParametersInfo(uint uiAction, uint uiParam, string pvParam, uint fWinIni);
+        [DllImport("user32.dll", EntryPoint = "GetWindowLong")]
+        public static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+
+        [DllImport("user32.dll", EntryPoint = "SetWindowLong")]
+        public static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+
+        [DllImport("user32.dll", EntryPoint = "SetLayeredWindowAttributes")]
+        public static extern bool SetLayeredWindowAttributes(IntPtr hWnd, int crKey, byte alpha, int dwFlags);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool RegisterHotKey(IntPtr hWnd, int id, KeyModifiers modifiers, Keys key);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+
+        #endregion
     }
 }
