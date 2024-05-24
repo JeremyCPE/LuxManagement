@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using LuxManagement.Services;
 
 namespace LuxManagement
 {
@@ -48,6 +49,7 @@ namespace LuxManagement
             this.applyButton.Size = new System.Drawing.Size(75, 23);
             this.applyButton.TabIndex = 1;
             this.applyButton.Text = "Statistics";
+            this.applyButton.Click += Statistics_Click;
             // 
             // label1
             // 
@@ -103,10 +105,16 @@ namespace LuxManagement
 
         }
 
+        private void Statistics_Click(object? sender, EventArgs e)
+        {
+            LuxManagementServices.SetBrightness();
+        }
+
         private void TrackBarLuminosity_ValueChanged(object? sender, EventArgs e)
         {
             /*NativeMethods.SetLayeredWindowAttributes(overlayWindow.Handle, 0, (byte)(255 - (brightness / 100f) * 255),
 (int)LayeredWindowAttributeFlags.LWA_ALPHA);*/
+
         }
 
         private void ApplyButton_Click(object sender, EventArgs e)
