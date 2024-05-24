@@ -14,15 +14,7 @@ namespace LuxManagement.Services
 
         public static void SetBrightness(int brightess)
         {
-            try
-            {
-                NativeMethods.SetMonitorBrightness(brightess);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error setting brightness: " + ex.Message);
-            }
-
+            NativeMethods.SetMonitorBrightness(brightess);
         }
-        }
+    }
 }

@@ -53,22 +53,27 @@ namespace LuxManagement.Controller
 
 
         #region "WMI"
-
+        /// <summary>
+        /// Set the MonitorBrightness, this method works for laptop but (probably) not for external monitors
+        /// </summary>
+        /// <param name="brightness"></param>
         public static void SetMonitorBrightness(int brightness)
         {
             // Create a management class object
-            ManagementClass mclass = new ManagementClass("WmiMonitorBrightnessMethods");
-            mclass.Scope = new ManagementScope(@"\\.\root\wmi");
+            var mclass = new ManagementClass("WmiMonitorBrightnessMethods")
+            {
+                Scope = new ManagementScope(@"\\.\root\wmi")
+            };
 
             // Get all instances of the class
             ManagementObjectCollection instances = mclass.GetInstances();
 
             foreach (ManagementObject instance in instances)
             {
-                // Use the WmiSetBrightness method to set the brightness
                 instance.InvokeMethod("WmiSetBrightness", new object[] { UInt32.MaxValue, brightness });
-                Console.WriteLine("Brightness set to " + brightness);
             }
         }
+        #endregion
+
     }
 }
