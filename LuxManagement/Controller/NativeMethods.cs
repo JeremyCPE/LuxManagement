@@ -12,6 +12,18 @@ namespace LuxManagement.Controller
     internal static class NativeMethods
     {
         #region "User32.dll"
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+        internal struct RAMP
+        {
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
+            public ushort[] Red;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
+            public ushort[] Green;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
+            public ushort[] Blue;
+        }
+
         // Define necessary constants and structs
         public const int PHYSICAL_MONITOR_DESCRIPTION_SIZE = 128;
 
@@ -49,7 +61,17 @@ namespace LuxManagement.Controller
         [DllImport("user32.dll", SetLastError = true)]
         public static extern IntPtr GetDesktopWindow();
 
-        #endregion
+        [DllImport("gdi32.dll", SetLastError = true)]
+        public static extern bool SetDeviceGammaRamp(IntPtr hDC, ref RAMP lpRamp);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetDC(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        public static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
+
+
+            #endregion
 
 
         #region "WMI"
@@ -58,20 +80,20 @@ namespace LuxManagement.Controller
         /// </summary>
         /// <param name="brightness"></param>
         public static void SetMonitorBrightness(int brightness)
+    {
+        // Create a management class object
+        var mclass = new ManagementClass("WmiMonitorBrightnessMethods")
         {
-            // Create a management class object
-            var mclass = new ManagementClass("WmiMonitorBrightnessMethods")
-            {
-                Scope = new ManagementScope(@"\\.\root\wmi")
-            };
+            Scope = new ManagementScope(@"\\.\root\wmi")
+        };
 
-            // Get all instances of the class
-            ManagementObjectCollection instances = mclass.GetInstances();
+        // Get all instances of the class
+        ManagementObjectCollection instances = mclass.GetInstances();
 
-            foreach (ManagementObject instance in instances)
-            {
-                instance.InvokeMethod("WmiSetBrightness", new object[] { UInt32.MaxValue, brightness });
-            }
+        foreach (ManagementObject instance in instances)
+        {
+            instance.InvokeMethod("WmiSetBrightness", new object[] { UInt32.MaxValue, brightness });
+        }
         }
         #endregion
 
